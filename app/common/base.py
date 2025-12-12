@@ -1,7 +1,7 @@
 """Base classes for models and repositories."""
 
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, List, Optional, Dict, Any
+from typing import TypeVar, Generic, List, Optional, Dict, Any, Tuple
 from datetime import datetime
 from app.common.exceptions import NotFoundError
 
