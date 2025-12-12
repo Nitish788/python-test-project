@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.common.base import BaseRepository
 from app.common.exceptions import ValidationError, NotFoundError
 from app.models.notification import Notification, NotificationStatus, NotificationType
+from app.services.task_service import TaskRepository
 import logging
 
 logger = logging.getLogger(__name__)
@@ -174,3 +175,9 @@ class NotificationRepository(BaseRepository[Notification]):
             for n in self._items.values()
             if n.user_id == user_id and n.notification_type == notification_type
         ]
+    
+    def get_notification_stats(self):
+    notifications = self._storage.values()
+    total = len(notifications)
+    unread = len([n for n in notifications if n.status == NotificationStatus.UNREAD])
+    return {"total": total, "unread": unread}

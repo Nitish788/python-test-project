@@ -22,6 +22,7 @@ class BaseModel(ABC):
         self.id = model_id
         self.created_at = created_at or datetime.now()
         self.updated_at = datetime.now()
+        self.version: int = kwargs.get('version', 1)
 
     @abstractmethod
     def to_dict(self) -> Dict[str, Any]:
