@@ -1,13 +1,13 @@
 """Services package for TODO application."""
 
-from app.services.task_service import TaskService
-from app.services.project_service import ProjectService
-from app.services.category_service import CategoryService
-from app.services.tag_service import TagService
+from app.services.task_service import TaskRepository
+from app.services.project_service import ProjectRepository
+from app.services.category_service import CategoryRepository
+from app.services.tag_service import TagRepository
 
 __all__ = [
-    "TaskService",
-    "ProjectService",
-    "CategoryService",
-    "TagService",
+    "TaskRepository",
+    "ProjectRepository",
+    "CategoryRepository",
+    "TagRepository",
 ]
