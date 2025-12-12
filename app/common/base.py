@@ -1,7 +1,7 @@
 """Base classes for models and repositories."""
 
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, List, Optional, Dict, Any
+from typing import TypeVar, Generic, List, Optional, Dict, Any, Tuple
 from datetime import datetime
 from app.common.exceptions import NotFoundError
 
@@ -22,6 +22,7 @@ class BaseModel(ABC):
         self.id = model_id
         self.created_at = created_at or datetime.now()
         self.updated_at = datetime.now()
+        self.version: int = kwargs.get('version', 1)
 
     @abstractmethod
     def to_dict(self) -> Dict[str, Any]:
