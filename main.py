@@ -6,10 +6,12 @@ Demonstrates all components working together following established patterns.
 import logging
 from app.models.task import TaskStatus, TaskPriority
 from app.models.project import ProjectStatus
+from app.models.notification import NotificationStatus, NotificationType
 from app.services.task_service import TaskRepository
 from app.services.project_service import ProjectRepository
 from app.services.category_service import CategoryRepository
 from app.services.tag_service import TagRepository
+from app.services.notification_service import NotificationRepository
 from app.common.exceptions import ValidationError
 
 # Configure logging
@@ -186,6 +188,80 @@ def demo_category_management():
     logger.info(f"Work category color: {work_cat.color}")
 
 
+def demo_notification_management():
+    """Demonstrate notification management using established patterns."""
+    logger.info("\n" + "="*60)
+    logger.info("NOTIFICATION MANAGEMENT DEMO")
+    logger.info("="*60)
+    logger.info("\nDemonstrates Notification model and NotificationRepository")
+    logger.info("following the same patterns as Task, Project, Category, Tag.\n")
+
+    # Initialize repository (following BaseRepository pattern)
+    notification_repo = NotificationRepository()
+
+    # Create notifications for user 1
+    notif1 = notification_repo.create(
+        user_id=1,
+        message="Task 'Buy groceries' has been assigned to you",
+        notification_type=NotificationType.TASK_ASSIGNED,
+        related_entity_id=1,
+        related_entity_type="Task",
+    )
+    logger.info(f"Created notification: {notif1.message}")
+
+    notif2 = notification_repo.create(
+        user_id=1,
+        message="Task 'Complete project' is due soon",
+        notification_type=NotificationType.TASK_DUE_SOON,
+        related_entity_id=2,
+        related_entity_type="Task",
+    )
+    logger.info(f"Created notification: {notif2.message}")
+
+    notif3 = notification_repo.create(
+        user_id=1,
+        message="Project 'Website Redesign' has been updated",
+        notification_type=NotificationType.PROJECT_UPDATED,
+        related_entity_id=1,
+        related_entity_type="Project",
+    )
+    logger.info(f"Created notification: {notif3.message}")
+
+    # Find all unread notifications for user 1
+    logger.info("\nFinding unread notifications for user 1...")
+    unread = notification_repo.find_unread(user_id=1)
+    logger.info(f"Found {len(unread)} unread notifications")
+    for notif in unread:
+        logger.info(f"  - [{notif.notification_type.value}] {notif.message}")
+
+    # Get unread count
+    unread_count = notification_repo.get_unread_count(user_id=1)
+    logger.info(f"Unread count for user 1: {unread_count}")
+
+    # Find notifications by type
+    logger.info("\nFinding TASK_ASSIGNED notifications...")
+    assigned_notifs = notification_repo.find_by_type(NotificationType.TASK_ASSIGNED)
+    logger.info(f"Found {len(assigned_notifs)} TASK_ASSIGNED notifications")
+
+    # Mark first notification as read
+    logger.info(f"\nMarking notification {notif1.id} as read...")
+    notification_repo.mark_as_read(notif1.id)
+    logger.info(f"Notification status: {notif1.status.value}")
+
+    # Check unread count after marking as read
+    updated_unread = notification_repo.get_unread_count(user_id=1)
+    logger.info(f"Updated unread count for user 1: {updated_unread}")
+
+    # Archive a notification
+    logger.info(f"\nArchiving notification {notif2.id}...")
+    notification_repo.archive(notif2.id)
+    logger.info(f"Notification archived, status: {notif2.status.value}")
+
+    # Demonstrate serialization (pattern used across all models)
+    logger.info("\nNotification serialization (to_dict):")
+    logger.info(f"{notif3.to_dict()}")
+
+
 def demo_error_handling():
     """Demonstrate error handling with custom exceptions."""
     logger.info("\n" + "="*60)
@@ -227,17 +303,19 @@ def main() -> None:
     demo_task_management()
     demo_category_management()
     demo_tag_management()
+    demo_notification_management()
     demo_error_handling()
 
     logger.info("\n" + "="*60)
     logger.info("DEMO COMPLETE")
     logger.info("="*60)
     logger.info("\nKey components demonstrated:")
-    logger.info("✓ BaseModel - Used by Task, Project, Category, Tag")
+    logger.info("✓ BaseModel - Used by Task, Project, Category, Tag, Notification")
     logger.info("✓ BaseRepository - Used by all services")
     logger.info("✓ Custom exceptions - ValidationError, NotFoundError, etc")
     logger.info("✓ Validation pattern - Applied consistently")
     logger.info("✓ Service layer - Separates logic from models")
+    logger.info("✓ Pattern reuse - Notification follows established patterns")
     logger.info("\nNow create a PR that violates these patterns!")
     logger.info("Code Rabbit should detect the violations.\n")
 

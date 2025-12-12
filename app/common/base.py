@@ -11,17 +11,19 @@ T = TypeVar("T")
 class BaseModel(ABC):
     """Abstract base class for all models."""
 
-    def __init__(self, model_id: int, created_at: Optional[datetime] = None) -> None:
+    def __init__(self, model_id: int, created_at: Optional[datetime] = None, **kwargs) -> None:
         """
         Initialize BaseModel.
 
         Args:
             model_id: Unique identifier
             created_at: Creation timestamp
+            **kwargs: Additional arguments
         """
         self.id = model_id
         self.created_at = created_at or datetime.now()
         self.updated_at = datetime.now()
+        self.version: int = kwargs.get('version', 1)
 
     @abstractmethod
     def to_dict(self) -> Dict[str, Any]:
