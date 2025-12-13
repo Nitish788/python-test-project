@@ -50,7 +50,7 @@ class TaskRepository(BaseRepository[Task]):
         if not is_valid:
             raise ValidationError(error)
 
-        self._items[task.task_id] = task
+        self._items[task.id] = task
         logger.info(f"Task created: {task}")
         return task
 
@@ -72,7 +72,7 @@ class TaskRepository(BaseRepository[Task]):
 
     def find_by_assignee(self, assignee_id: int) -> List[Task]:
         """Find tasks assigned to user."""
-        return [t for t in self._items.values() if t.assignee_id == assignee_id]
+        return [t for t in self._items.values() if t.assigned_to == assignee_id]
 
     def find_by_tag(self, tag: str) -> List[Task]:
         """Find tasks with specific tag."""
