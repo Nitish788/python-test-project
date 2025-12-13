@@ -50,7 +50,7 @@ class TaskRepository(BaseRepository[Task]):
         if not is_valid:
             raise ValidationError(error)
 
-        self._items[task.id] = task
+        self._items[task.task_id] = task
         logger.info(f"Task created: {task}")
         return task
 
